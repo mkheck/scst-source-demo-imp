@@ -27,7 +27,7 @@ public class SourceDemoImpApplication {
 @Component
 class PingSource {
     private final Source source;
-    private boolean isA = true;
+    private Long prefix = 0L;
 
     PingSource(Source source) {
         this.source = source;
@@ -35,9 +35,8 @@ class PingSource {
 
     @Scheduled(fixedRate = 1000)
     private void ping() {
-        Ping ping = new Ping(isA ? "A" : "B", UUID.randomUUID().toString(), Instant.now().toString());
+        Ping ping = new Ping(prefix++ % 2 == 0 ? "A" : "B", UUID.randomUUID().toString(), Instant.now().toString());
         System.out.println(ping.toString());
-        isA = !isA;
 
         source.output().send(MessageBuilder.withPayload(ping).build());
     }
